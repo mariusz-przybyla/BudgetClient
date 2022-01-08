@@ -8,7 +8,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-@PageTitle("About")
+@PageTitle("O projekcie")
 @Route(value = "about", layout = MainLayout.class)
 public class AboutView extends VerticalLayout {
 
@@ -19,8 +19,8 @@ public class AboutView extends VerticalLayout {
         img.setWidth("200px");
         add(img);
 
-        add(new H2("This place intentionally left empty"));
-        add(new Paragraph("It’s a place where you can grow your own UI 🤗"));
+        add(new H2("Aplikacja budżet klient"));
+        add(new Paragraph("Mariusz Przybyła 🤗"));
 
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);

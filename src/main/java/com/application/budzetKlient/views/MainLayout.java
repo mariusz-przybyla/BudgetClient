@@ -1,7 +1,10 @@
 package com.application.budzetKlient.views;
 
 import com.application.budzetKlient.views.about.AboutView;
-import com.application.budzetKlient.views.helloworld.HelloWorldView;
+import com.application.budzetKlient.views.expenses.ExpenseItemView;
+import com.application.budzetKlient.views.expenses.ExpensesView;
+import com.application.budzetKlient.views.login.LoginView;
+import com.application.budzetKlient.views.login.RegistrationView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -107,9 +110,15 @@ public class MainLayout extends AppLayout {
 
     private List<RouterLink> createLinks() {
         MenuItemInfo[] menuItems = new MenuItemInfo[]{ //
-                new MenuItemInfo("Hello World", "la la-globe", HelloWorldView.class), //
+                new MenuItemInfo("Logowanie", "la la-globe", LoginView.class), //
 
-                new MenuItemInfo("About", "la la-file", AboutView.class), //
+                new MenuItemInfo("O projekcie", "la la-file", AboutView.class), //
+
+                new MenuItemInfo("Wydatki", "la la-globe", ExpensesView.class),
+
+                new MenuItemInfo("Dodaj wydatek", "la la-globe", ExpenseItemView.class),
+
+                new MenuItemInfo("Zarejestruj się", "la la-globe", RegistrationView.class),
 
         };
         List<RouterLink> links = new ArrayList<>();
