@@ -19,9 +19,9 @@ public class UserDetails {
 
     @NotNull
     @Length(min = 1, max = 32)
-    private String firstname;
+    private String firstName;
 
     @NotNull
     @Length(min = 1, max = 32)
-    private String lastname;
+    private String lastName;
 }
