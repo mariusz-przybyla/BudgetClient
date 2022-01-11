@@ -3,21 +3,13 @@ package com.application.budzetKlient.views;
 import com.application.budzetKlient.views.about.AboutView;
 import com.application.budzetKlient.views.expenses.ExpenseItemView;
 import com.application.budzetKlient.views.expenses.ExpensesView;
-import com.application.budzetKlient.views.login.LoginView;
 import com.application.budzetKlient.views.login.LogoutView;
-import com.application.budzetKlient.views.login.RegistrationView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.Footer;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Header;
-import com.vaadin.flow.component.html.ListItem;
-import com.vaadin.flow.component.html.Nav;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.html.UnorderedList;
+import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
@@ -68,6 +60,10 @@ public class MainLayoutView extends AppLayout {
     }
 
     private Component createHeaderContent() {
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.getThemeList().set("dark", true);
+        layout.setWidthFull();
+
         DrawerToggle toggle = new DrawerToggle();
         toggle.addClassName("text-secondary");
         toggle.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
@@ -79,7 +75,8 @@ public class MainLayoutView extends AppLayout {
         Header header = new Header(toggle, viewTitle);
         header.addClassNames("bg-base", "border-b", "border-contrast-10", "box-border", "flex", "h-xl", "items-center",
                 "w-full");
-        return header;
+        layout.add(header);
+        return layout;
     }
 
     private Component createDrawerContent() {
@@ -111,15 +108,15 @@ public class MainLayoutView extends AppLayout {
 
     private List<RouterLink> createLinks() {
         MenuItemInfo[] menuItems = new MenuItemInfo[]{ //
-                new MenuItemInfo("O projekcie", "la la-file", AboutView.class), //
+//                new MenuItemInfo("Logowanie", "la la-shift", LoginView.class), //
 
-                new MenuItemInfo("Logowanie", "la la-shift", LoginView.class), //
+                new MenuItemInfo("O projekcie", "la la-file", AboutView.class), //
 
                 new MenuItemInfo("Wydatki", "la la-lines-wallet", ExpensesView.class),
 
                 new MenuItemInfo("Dodaj wydatek", "la la-plus-circle-o", ExpenseItemView.class),
 
-                new MenuItemInfo("Zarejestruj się", "la la-user", RegistrationView.class),
+//                new MenuItemInfo("Zarejestruj się", "la la-user", RegistrationView.class),
 
                 new MenuItemInfo("Wyloguj się", "la la-power-off", LogoutView.class),
 

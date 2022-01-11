@@ -2,7 +2,6 @@ package com.application.budzetKlient.views.login;
 
 import com.application.budzetKlient.model.UserDetails;
 import com.application.budzetKlient.rest.RegistrationClient;
-import com.application.budzetKlient.views.MainLayoutView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -22,7 +21,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 @PageTitle("Zarejestruj się")
-@Route(value = "registration", layout = MainLayoutView.class)
+@Route(value = "registration")
 public class RegistrationView extends VerticalLayout {
 
     private PasswordField passwordField1= new PasswordField("Hasło");
@@ -39,8 +38,8 @@ public class RegistrationView extends VerticalLayout {
 
     private boolean enablePasswordValidation;
 
-//    public RegistrationView(@Autowired UserDetailsService service) {
     public RegistrationView(RegistrationClient registrationClient) {
+//    public RegistrationView(RegistrationClient registrationClient) {
 
         this.registrationClient = registrationClient;
 //        this.service = service;
@@ -95,7 +94,6 @@ public class RegistrationView extends VerticalLayout {
                 getElement().getText();
             }
         });
-
     }
 
     private void onRegistrationClickEvent() {
