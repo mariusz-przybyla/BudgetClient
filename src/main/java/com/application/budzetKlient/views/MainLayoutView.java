@@ -31,7 +31,7 @@ import java.util.List;
 @PWA(name = "BudzetKlient", shortName = "BudzetKlient", enableInstallPrompt = false)
 @Theme(themeFolder = "budzetklient")
 @PageTitle("Main")
-public class MainLayout extends AppLayout {
+public class MainLayoutView extends AppLayout {
 
     public static class MenuItemInfo {
 
@@ -61,7 +61,7 @@ public class MainLayout extends AppLayout {
 
     private H1 viewTitle;
 
-    public MainLayout() {
+    public MainLayoutView() {
         setPrimarySection(Section.DRAWER);
         addToNavbar(true, createHeaderContent());
         addToDrawer(createDrawerContent());

@@ -10,5 +10,6 @@ public class Category {
 
     @Id
     private Long id;
+    private Integer io;
     private String name;
 }

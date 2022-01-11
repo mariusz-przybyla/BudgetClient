@@ -1,8 +1,9 @@
 package com.application.budzetKlient.views.login;
 
 import com.application.budzetKlient.model.UserDetails;
-import com.application.budzetKlient.model.UserDetailsService;
-import com.application.budzetKlient.views.MainLayout;
+import com.application.budzetKlient.rest.RegistrationClient;
+import com.application.budzetKlient.views.MainLayoutView;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -19,10 +20,9 @@ import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @PageTitle("Zarejestruj się")
-@Route(value = "registration", layout = MainLayout.class)
+@Route(value = "registration", layout = MainLayoutView.class)
 public class RegistrationView extends VerticalLayout {
 
     private PasswordField passwordField1= new PasswordField("Hasło");
@@ -32,14 +32,18 @@ public class RegistrationView extends VerticalLayout {
     private TextField loginField = new TextField("Nazwa użytkownika");
     private UserDetails detailsBean = new UserDetails();
 
-    private UserDetailsService service;
+    RegistrationClient registrationClient;
+
+//    private UserDetailsService service;
     private BeanValidationBinder<UserDetails> binder;
 
     private boolean enablePasswordValidation;
 
-    public RegistrationView(@Autowired UserDetailsService service) {
+//    public RegistrationView(@Autowired UserDetailsService service) {
+    public RegistrationView(RegistrationClient registrationClient) {
 
-        this.service = service;
+        this.registrationClient = registrationClient;
+//        this.service = service;
 
         H2 title = new H2("Rejestracja");
 
@@ -67,10 +71,12 @@ public class RegistrationView extends VerticalLayout {
 
         binder = new BeanValidationBinder<UserDetails>(UserDetails.class);
 
-        binder.forField(firstnameField).asRequired().bind("firstname");
-        binder.forField(lastnameField).asRequired().bind("lastname");
+        binder.forField(firstnameField).asRequired().bind("firstName");
+        binder.forField(lastnameField).asRequired().bind("lastName");
+        binder.forField(loginField).asRequired().bind("login");
 
         binder.forField(passwordField1).asRequired().withValidator(this::passwordValidator).bind("password");
+        binder.forField(passwordField2).asRequired().withValidator(this::passwordValidator).bind("password");
 
         passwordField2.addValueChangeListener(e -> {
             enablePasswordValidation = true;
@@ -83,8 +89,7 @@ public class RegistrationView extends VerticalLayout {
         submitButton.addClickListener(e -> {
             try {
                 binder.writeBean(detailsBean);
-
-                showSuccess(detailsBean);
+                onRegistrationClickEvent();
 
             } catch (ValidationException e1) {
                 getElement().getText();
@@ -93,8 +98,30 @@ public class RegistrationView extends VerticalLayout {
 
     }
 
+    private void onRegistrationClickEvent() {
+
+        boolean registration = registrationClient.registration(
+                detailsBean.getLogin(),
+                detailsBean.getPassword(),
+                detailsBean.getFirstName(),
+                detailsBean.getLastName());
+
+        if (registration) {
+            showSuccess(detailsBean);
+            UI.getCurrent().navigate(LoginView.class);
+        } else {
+            userExists(detailsBean);
+            binder.getFields().forEach(f -> f.clear());
+        }
+    }
+
+    private void userExists(UserDetails detailsBean) {
+        Notification notification = Notification.show("Użytkownik z loginem " + detailsBean.getLogin() + " już istnieje!");
+        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+    }
+
     private void showSuccess(UserDetails detailsBean) {
-        Notification notification = Notification.show("Dane zapisane, witaj " + detailsBean.getFirstname());
+        Notification notification = Notification.show("Dane zapisane, witaj " + detailsBean.getFirstName());
         notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     }
 

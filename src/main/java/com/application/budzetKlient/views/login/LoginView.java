@@ -2,10 +2,10 @@ package com.application.budzetKlient.views.login;
 
 
 import com.application.budzetKlient.rest.LoginClient;
-import com.application.budzetKlient.views.MainLayout;
-import com.application.budzetKlient.views.about.AboutView;
+import com.application.budzetKlient.views.MainLayoutView;
 import com.application.budzetKlient.views.expenses.ExpensesView;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.login.AbstractLogin;
 import com.vaadin.flow.component.login.LoginForm;
@@ -15,22 +15,24 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
 @PageTitle("Logowanie")
-@Route(value = "login", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
+@Route(value = "login", layout = MainLayoutView.class)
+@RouteAlias(value = "", layout = MainLayoutView.class)
+@CssImport("./styles/views/login/login-view.css")
 public class LoginView extends Div {
 
     private LoginForm loginForm = new LoginForm();
     private LoginClient loginClient;
 
     public LoginView(LoginClient loginClient) {
+        setId("login-view");
 
         this.loginClient = loginClient;
 
-        getStyle()
-                .set("background-color", "var(--lumo-contrast-5pct)")
-                .set("display", "flex")
-                .set("justify-content", "center")
-                .set("padding", "var(--lumo-space-l)");
+//        getStyle()
+//                .set("background-color", "var(--lumo-contrast-5pct)")
+//                .set("display", "flex")
+//                .set("justify-content", "center")
+//                .set("padding", "var(--lumo-space-l)");
 
         loginForm.setI18n(getInternationalization());
         add(loginForm);

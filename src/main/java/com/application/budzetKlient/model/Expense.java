@@ -3,7 +3,6 @@ package com.application.budzetKlient.model;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
 @Data
 public class Expense {
@@ -11,7 +10,7 @@ public class Expense {
     private Long id;
 
     @NotNull
-    private String date;
+    private String createdAt;
 
     @NotNull
     private String name;

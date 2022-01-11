@@ -6,7 +6,7 @@ import com.application.budzetKlient.model.Expense;
 import com.application.budzetKlient.rest.CategoryClient;
 import com.application.budzetKlient.rest.ExpenseClient;
 import com.application.budzetKlient.rest.LoginClient;
-import com.application.budzetKlient.views.MainLayout;
+import com.application.budzetKlient.views.MainLayoutView;
 import com.application.budzetKlient.views.login.LogoutView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @PageTitle("Dodaj wydatek")
-@Route(value = "expense", layout = MainLayout.class)
+@Route(value = "expense", layout = MainLayoutView.class)
 public class ExpenseItemView extends VerticalLayout {
 
     private TextField nameField = new TextField("Nazwa");

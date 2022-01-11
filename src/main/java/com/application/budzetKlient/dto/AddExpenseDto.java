@@ -1,6 +1,5 @@
 package com.application.budzetKlient.dto;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
