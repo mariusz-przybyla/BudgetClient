@@ -9,6 +9,8 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.login.AbstractLogin;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.login.LoginI18n;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
@@ -45,6 +47,9 @@ public class LoginView extends Div {
 
         if (login) {
             UI.getCurrent().navigate(ExpensesView.class);
+        } else {
+            showError();
+            UI.getCurrent().navigate(LoginView.class);
         }
     }
 
@@ -61,5 +66,10 @@ public class LoginView extends Div {
         i18n.setForm(i18nForm);
 
         return i18n;
+    }
+
+    private void showError() {
+        Notification notification = Notification.show("Niepoprawne dane!");
+        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
     }
 }

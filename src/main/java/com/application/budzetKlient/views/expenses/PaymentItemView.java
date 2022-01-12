@@ -27,12 +27,12 @@ import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
 import java.util.List;
 
-@PageTitle("Dodaj wydatek")
-@Route(value = "expense", layout = MainLayoutView.class)
-public class ExpenseItemView extends VerticalLayout {
+@PageTitle("Dodaj przychód")
+@Route(value = "payment", layout = MainLayoutView.class)
+public class PaymentItemView extends VerticalLayout {
 
     private TextField nameField = new TextField("Nazwa");
-    private NumberField priceField = new NumberField("Cena");
+    private NumberField priceField = new NumberField("Kwota");
     private ComboBox<Category> box = new ComboBox<>("Kategoria");
 
     private List<Expense> expensesList = new ArrayList<>();
@@ -48,7 +48,7 @@ public class ExpenseItemView extends VerticalLayout {
 
 
 
-    public ExpenseItemView(CategoryClient categoryClient, ExpenseClient expenseClient, LoginClient loginClient) {
+    public PaymentItemView(CategoryClient categoryClient, ExpenseClient expenseClient, LoginClient loginClient) {
 
         this.categoryClient = categoryClient;
         this.expenseClient = expenseClient;
@@ -57,7 +57,7 @@ public class ExpenseItemView extends VerticalLayout {
             UI.getCurrent().navigate(LogoutView.class);
         }
 
-        H2 title = new H2("Dodaj wydatek");
+        H2 title = new H2("Dodaj przychód");
         accept.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         FormLayout formLayout = new FormLayout(title, nameField, priceField, box, accept, back);
@@ -80,7 +80,7 @@ public class ExpenseItemView extends VerticalLayout {
         binder.forField(box).asRequired().bind("type");
 
         box.setItemLabelGenerator(e -> e.getName());
-        box.setItems(categoryClient.getExpenseCategory());
+        box.setItems(categoryClient.getPaymentCategory());
 
         accept.addClickListener(event -> addItem());
     }

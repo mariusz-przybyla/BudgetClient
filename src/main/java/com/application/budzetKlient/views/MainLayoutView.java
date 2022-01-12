@@ -1,8 +1,10 @@
 package com.application.budzetKlient.views;
 
 import com.application.budzetKlient.views.about.AboutView;
+import com.application.budzetKlient.views.data.DataListView;
 import com.application.budzetKlient.views.expenses.ExpenseItemView;
 import com.application.budzetKlient.views.expenses.ExpensesView;
+import com.application.budzetKlient.views.expenses.PaymentItemView;
 import com.application.budzetKlient.views.login.LogoutView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -10,10 +12,14 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.textfield.BigDecimalField;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +60,7 @@ public class MainLayoutView extends AppLayout {
     private H1 viewTitle;
 
     public MainLayoutView() {
+
         setPrimarySection(Section.DRAWER);
         addToNavbar(true, createHeaderContent());
         addToDrawer(createDrawerContent());
@@ -110,13 +117,15 @@ public class MainLayoutView extends AppLayout {
         MenuItemInfo[] menuItems = new MenuItemInfo[]{ //
 //                new MenuItemInfo("Logowanie", "la la-shift", LoginView.class), //
 
-                new MenuItemInfo("O projekcie", "la la-file", AboutView.class), //
+                new MenuItemInfo("O projekcie", "la la-info-circle", AboutView.class), //
 
-                new MenuItemInfo("Wydatki", "la la-lines-wallet", ExpensesView.class),
+                new MenuItemInfo("Wydatki", "la la-list-ul", ExpensesView.class),
 
-                new MenuItemInfo("Dodaj wydatek", "la la-plus-circle-o", ExpenseItemView.class),
+                new MenuItemInfo("Dodaj wydatek", "la la-plus", ExpenseItemView.class),
 
-//                new MenuItemInfo("Zarejestruj się", "la la-user", RegistrationView.class),
+                new MenuItemInfo("Dodaj przychód", "la la-plus", PaymentItemView.class),
+
+                new MenuItemInfo("Dane o wydatkach", "la la-database", DataListView.class),
 
                 new MenuItemInfo("Wyloguj się", "la la-power-off", LogoutView.class),
 

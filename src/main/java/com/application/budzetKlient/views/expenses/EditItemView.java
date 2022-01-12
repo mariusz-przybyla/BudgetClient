@@ -1,6 +1,7 @@
 package com.application.budzetKlient.views.expenses;
 
 import com.application.budzetKlient.dto.AddExpenseDto;
+import com.application.budzetKlient.dto.ExpenseDto;
 import com.application.budzetKlient.model.Category;
 import com.application.budzetKlient.model.Expense;
 import com.application.budzetKlient.rest.CategoryClient;
@@ -13,7 +14,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -24,40 +24,34 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@PageTitle("Dodaj wydatek")
-@Route(value = "expense", layout = MainLayoutView.class)
-public class ExpenseItemView extends VerticalLayout {
+@PageTitle("Edytuj wydatek")
+@Route(value = "edit", layout = MainLayoutView.class)
+public class EditItemView extends VerticalLayout {
 
     private TextField nameField = new TextField("Nazwa");
     private NumberField priceField = new NumberField("Cena");
     private ComboBox<Category> box = new ComboBox<>("Kategoria");
 
-    private List<Expense> expensesList = new ArrayList<>();
-    private Grid<Expense> gridExpense = new Grid<>(Expense.class);
     private BeanValidationBinder<Expense> binder;
-    private Expense expense = new Expense();
 
     private Button back = new Button("Cofnij", e -> UI.getCurrent().navigate("expenses"));
-    private Button accept = new Button("Dodaj");
+    private Button accept = new Button("Edytuj");
 
     private CategoryClient categoryClient;
     private ExpenseClient expenseClient;
+    private ExpenseDto expenseDto = new ExpenseDto();
 
-
-
-    public ExpenseItemView(CategoryClient categoryClient, ExpenseClient expenseClient, LoginClient loginClient) {
+    public EditItemView(CategoryClient categoryClient, ExpenseClient expenseClient, LoginClient loginClient) {
 
         this.categoryClient = categoryClient;
         this.expenseClient = expenseClient;
+//        this.expenseDto = expenseDto;
 
         if (loginClient.isNotLogged()) {
             UI.getCurrent().navigate(LogoutView.class);
         }
 
-        H2 title = new H2("Dodaj wydatek");
+        H2 title = new H2("Edytuj wydatek");
         accept.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         FormLayout formLayout = new FormLayout(title, nameField, priceField, box, accept, back);
@@ -74,6 +68,9 @@ public class ExpenseItemView extends VerticalLayout {
 
         add(formLayout);
 
+//        nameField.setValue(expenseDto.getName());
+//        priceField.setValue(expenseDto.getPrice());
+
         binder = new BeanValidationBinder<Expense>(Expense.class);
         binder.forField(nameField).asRequired().bind("name");
         binder.forField(priceField).asRequired().bind("price");
@@ -82,10 +79,10 @@ public class ExpenseItemView extends VerticalLayout {
         box.setItemLabelGenerator(e -> e.getName());
         box.setItems(categoryClient.getExpenseCategory());
 
-        accept.addClickListener(event -> addItem());
+        accept.addClickListener(event -> editItem());
     }
 
-    private void addItem() {
+    private void editItem() {
         AddExpenseDto expense = new AddExpenseDto();
 
         expense.setName(nameField.getValue());

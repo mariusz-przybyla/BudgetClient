@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
 public class LoginClient {
 
+    Logger logger = Logger.getLogger(LoginClient.class.getName());
     private final RestTemplate restTemplate;
     private LoginResponse loginResponse;
 
@@ -23,14 +25,19 @@ public class LoginClient {
         loginRequest.setLogin(login);
         loginRequest.setPassword(password);
 
-        ResponseEntity<LoginResponse> responseEntity = restTemplate.postForEntity(
-                "http://localhost:8080/api/auth/login",
-                loginRequest,
-                LoginResponse.class);
+        try {
+            ResponseEntity<LoginResponse> responseEntity = restTemplate.postForEntity(
+                    "http://localhost:8080/api/auth/login",
+                    loginRequest,
+                    LoginResponse.class);
 
-         loginResponse = responseEntity.getBody();
+            loginResponse = responseEntity.getBody();
 
-        return responseEntity.getStatusCode().equals(HttpStatus.OK);
+            return responseEntity.getStatusCode().equals(HttpStatus.OK);
+        } catch (Exception e) {
+            logger.info("Niepoprawne dane logowania!");
+            return false;
+        }
     }
 
     public String getToken() {
