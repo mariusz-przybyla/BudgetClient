@@ -39,13 +39,13 @@ public class EditItemView extends VerticalLayout {
 
     private CategoryClient categoryClient;
     private ExpenseClient expenseClient;
-    private ExpenseDto expenseDto = new ExpenseDto();
+    private ExpenseDto expenseDto;
 
     public EditItemView(CategoryClient categoryClient, ExpenseClient expenseClient, LoginClient loginClient) {
 
         this.categoryClient = categoryClient;
         this.expenseClient = expenseClient;
-//        this.expenseDto = expenseDto;
+        this.expenseDto = expenseDto;
 
         if (loginClient.isNotLogged()) {
             UI.getCurrent().navigate(LogoutView.class);
@@ -68,9 +68,6 @@ public class EditItemView extends VerticalLayout {
 
         add(formLayout);
 
-//        nameField.setValue(expenseDto.getName());
-//        priceField.setValue(expenseDto.getPrice());
-
         binder = new BeanValidationBinder<Expense>(Expense.class);
         binder.forField(nameField).asRequired().bind("name");
         binder.forField(priceField).asRequired().bind("price");
@@ -80,6 +77,10 @@ public class EditItemView extends VerticalLayout {
         box.setItems(categoryClient.getExpenseCategory());
 
         accept.addClickListener(event -> editItem());
+    }
+    public void getDataFrom(ExpenseDto expenseDto) {
+        ExpenseDto test = expenseDto;
+
     }
 
     private void editItem() {

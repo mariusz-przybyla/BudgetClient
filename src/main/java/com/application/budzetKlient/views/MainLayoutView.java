@@ -87,7 +87,7 @@ public class MainLayoutView extends AppLayout {
     }
 
     private Component createDrawerContent() {
-        H2 appName = new H2("BudzetKlient");
+        H2 appName = new H2("Budżet domowy");
         appName.addClassNames("flex", "items-center", "h-xl", "m-0", "px-m", "text-m");
 
         com.vaadin.flow.component.html.Section section = new com.vaadin.flow.component.html.Section(appName,
@@ -117,7 +117,7 @@ public class MainLayoutView extends AppLayout {
         MenuItemInfo[] menuItems = new MenuItemInfo[]{ //
 //                new MenuItemInfo("Logowanie", "la la-shift", LoginView.class), //
 
-                new MenuItemInfo("O projekcie", "la la-info-circle", AboutView.class), //
+                new MenuItemInfo("Informacje", "la la-info-circle", AboutView.class), //
 
                 new MenuItemInfo("Wydatki", "la la-list-ul", ExpensesView.class),
 

@@ -48,8 +48,8 @@ public class LoginView extends Div {
         if (login) {
             UI.getCurrent().navigate(ExpensesView.class);
         } else {
+            UI.getCurrent().getPage().reload();
             showError();
-            UI.getCurrent().navigate(LoginView.class);
         }
     }
 

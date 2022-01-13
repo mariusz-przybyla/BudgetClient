@@ -2,7 +2,6 @@ package com.application.budzetKlient.rest;
 
 import com.application.budzetKlient.dto.AddExpenseDto;
 import com.application.budzetKlient.dto.ExpenseDto;
-import com.application.budzetKlient.model.Expense;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
@@ -25,24 +24,35 @@ public class ExpenseClient {
     private RestTemplate restTemplate = new RestTemplate();
     Logger logger = Logger.getLogger(ExpenseClient.class.getName());
 
+    public List<ExpenseDto> getExpenses() {
 
-    public List<ExpenseDto> getExpenses(){
+        try {
+            ResponseEntity<ExpenseDto[]> responseEntity = getRestTemplate().getForEntity(
+                    "http://localhost:8080/api/expense",
+                    ExpenseDto[].class);
 
-        ResponseEntity<ExpenseDto[]> responseEntity = getRestTemplate().getForEntity(
-                "http://localhost:8080/api/expense",
-                ExpenseDto[].class);
+            ExpenseDto[] arrayExpenses = responseEntity.getBody();
 
-        ExpenseDto[] arrayExpenses = responseEntity.getBody();
 
-        return Arrays.asList(arrayExpenses);
+            return Arrays.asList(arrayExpenses);
+        } catch (Exception e) {
+            logger.info("Pobieranie wydatków nie powiodło się");
+            return null;
+        }
     }
 
     public boolean addExpense(AddExpenseDto addExpenseDto) {
 
-        ResponseEntity<ExpenseDto> responseEntity = getRestTemplate().postForEntity(
-                "http://localhost:8080/api/expense",
-                addExpenseDto,
-                ExpenseDto.class);
+        ResponseEntity<ExpenseDto> responseEntity = null;
+
+        try {
+            responseEntity = getRestTemplate().postForEntity(
+                    "http://localhost:8080/api/expense",
+                    addExpenseDto,
+                    ExpenseDto.class);
+        } catch (Exception e) {
+            logger.info("Dodanie wydatku nie powiodło się!");
+        }
 
         return responseEntity.getStatusCode().equals(HttpStatus.CREATED);
     }
@@ -56,28 +66,32 @@ public class ExpenseClient {
             getRestTemplate().delete("http://localhost:8080/api/expense/{id}", params);
 
         } catch (Exception e) {
-            logger.info("Usuniecie elementu nie powiodło się!");
+            logger.info("Usuniecie elementu powiodło się!");
         }
 
         return true;
     }
 
-//    public void editElement(ExpenseDto expenseDto) {
-//        ExpenseDto ex = new ExpenseDto();
-//        ex.setName(expenseDto.getName());
-//        ex.setPrice(expenseDto.getPrice());
-//        ex.setType(ex.getType());
-//
-//        ResponseEntity<ExpenseDto> responseEntity = getRestTemplate().put(
-//                "http://localhost:8080/api/expense/{id}",
-//                ex,
-//                expenseDto);
-//    }
+    public void updateElement(ExpenseDto expenseDto) {
+        ExpenseDto ex = new ExpenseDto();
+        ex.setName(expenseDto.getName());
+        ex.setPrice(expenseDto.getPrice());
+        ex.setType(ex.getType());
+
+        try {
+            getRestTemplate().put(
+                    "http://localhost:8080/api/expense/{id}",
+                    ex,
+                    ExpenseDto.class);
+        } catch (Exception e) {
+            logger.info("Edycja elementu nie powiodła się!");
+        }
+    }
 
     private RestTemplate getRestTemplate() {
         String accessToken = loginClient.getToken();
 
-        return new RestTemplateBuilder(rt-> rt.getInterceptors().add((request, body, execution) -> {
+        return new RestTemplateBuilder(rt -> rt.getInterceptors().add((request, body, execution) -> {
             request.getHeaders().add("Authorization", "Bearer " + accessToken);
             return execution.execute(request, body);
         })).build();

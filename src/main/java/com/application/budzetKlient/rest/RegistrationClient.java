@@ -1,16 +1,12 @@
 package com.application.budzetKlient.rest;
 
 import com.application.budzetKlient.dto.UserDto;
-import com.application.budzetKlient.model.LoginRequest;
-import com.application.budzetKlient.model.LoginResponse;
 import com.application.budzetKlient.model.UserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
