@@ -1,6 +1,7 @@
 package com.application.budzetKlient.views.expenses;
 
 import com.application.budzetKlient.dto.ExpenseDto;
+import com.application.budzetKlient.dto.IdDto;
 import com.application.budzetKlient.model.Category;
 import com.application.budzetKlient.rest.CategoryClient;
 import com.application.budzetKlient.rest.ExpenseClient;
@@ -12,6 +13,9 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -41,11 +45,13 @@ public class ExpensesView extends VerticalLayout {
     private ExpenseClient expenseClient;
     private CategoryClient categoryClient;
     private ExpenseDto expenseDto;
+    private IdDto idDto;
 
-    public ExpensesView(ExpenseClient expenseClient, LoginClient loginClient, CategoryClient categoryClient) {
+    public ExpensesView(ExpenseClient expenseClient, LoginClient loginClient, CategoryClient categoryClient, IdDto idDto) {
 
         this.expenseClient = expenseClient;
         this.categoryClient = categoryClient;
+        this.idDto = idDto;
 
         if (loginClient.isNotLogged()) {
             UI.getCurrent().navigate(LogoutView.class);
@@ -60,7 +66,7 @@ public class ExpensesView extends VerticalLayout {
 
         gridExpense.addSelectionListener(selectionEvent -> {
             deleteButton.addClickListener(e -> selectionEvent.getFirstSelectedItem().ifPresent(item -> deleteItem(item.getId())));
-            editButton.addClickListener(e -> selectionEvent.getFirstSelectedItem().ifPresent(item -> deleteItem(item.getId())));
+            editButton.addClickListener(e -> selectionEvent.getFirstSelectedItem().ifPresent(it -> updateitem(it.getId())));
         });
 
         VerticalLayout verticalLayout = new VerticalLayout();
@@ -114,7 +120,6 @@ public class ExpensesView extends VerticalLayout {
         gridExpense.setItems(collect);
     }
 
-
     private void deleteItem(Long id) {
 
         boolean isDeleted = expenseClient.deleteExpense(id);
@@ -132,10 +137,11 @@ public class ExpensesView extends VerticalLayout {
         }
     }
 
-//    public void updateitem(ExpenseDto getExpense) {
-//        expenseDto = getExpense;
-//        UI.getCurrent().navigate(EditItemView.class);
-//    }
+    public void updateitem(Long id) {
+        idDto.setId(id);
+
+        UI.getCurrent().navigate(EditItemView.class);
+    }
 
     private void showError() {
         Notification notification = Notification.show("Element nie został poprawnie usunięty!");

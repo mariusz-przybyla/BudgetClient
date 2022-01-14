@@ -2,6 +2,7 @@ package com.application.budzetKlient.views.expenses;
 
 import com.application.budzetKlient.dto.AddExpenseDto;
 import com.application.budzetKlient.dto.ExpenseDto;
+import com.application.budzetKlient.dto.IdDto;
 import com.application.budzetKlient.model.Category;
 import com.application.budzetKlient.model.Expense;
 import com.application.budzetKlient.rest.CategoryClient;
@@ -24,9 +25,14 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import java.util.List;
+import java.util.logging.Logger;
+
 @PageTitle("Edytuj wydatek")
 @Route(value = "edit", layout = MainLayoutView.class)
 public class EditItemView extends VerticalLayout {
+
+    Logger logger = Logger.getLogger(EditItemView.class.getName());
 
     private TextField nameField = new TextField("Nazwa");
     private NumberField priceField = new NumberField("Cena");
@@ -39,13 +45,14 @@ public class EditItemView extends VerticalLayout {
 
     private CategoryClient categoryClient;
     private ExpenseClient expenseClient;
-    private ExpenseDto expenseDto;
+    private Long itemId;
+    private IdDto idDto;
 
-    public EditItemView(CategoryClient categoryClient, ExpenseClient expenseClient, LoginClient loginClient) {
+    public EditItemView(CategoryClient categoryClient, ExpenseClient expenseClient, LoginClient loginClient, IdDto idDto) {
 
         this.categoryClient = categoryClient;
         this.expenseClient = expenseClient;
-        this.expenseDto = expenseDto;
+        this.idDto = idDto;
 
         if (loginClient.isNotLogged()) {
             UI.getCurrent().navigate(LogoutView.class);
@@ -68,39 +75,62 @@ public class EditItemView extends VerticalLayout {
 
         add(formLayout);
 
+        box.setItemLabelGenerator(e -> e.getName());
+        box.setItems(categoryClient.getExpenseCategory());
+
+        fillForm(idDto.getId());
+
         binder = new BeanValidationBinder<Expense>(Expense.class);
         binder.forField(nameField).asRequired().bind("name");
         binder.forField(priceField).asRequired().bind("price");
         binder.forField(box).asRequired().bind("type");
 
-        box.setItemLabelGenerator(e -> e.getName());
-        box.setItems(categoryClient.getExpenseCategory());
-
-        accept.addClickListener(event -> editItem());
-    }
-    public void getDataFrom(ExpenseDto expenseDto) {
-        ExpenseDto test = expenseDto;
-
+        accept.addClickListener(event -> updateItem(idDto.getId()));
     }
 
-    private void editItem() {
-        AddExpenseDto expense = new AddExpenseDto();
+    public void updateItem(Long id) {
+        AddExpenseDto expenseDto = new AddExpenseDto();
 
-        expense.setName(nameField.getValue());
-        expense.setPrice(priceField.getValue());
-        expense.setCategoryId(box.getValue().getId());
-
-        boolean isAdded = expenseClient.addExpense(expense);
-
-        if (isAdded) {
-            UI.getCurrent().navigate(ExpensesView.class);
-            showSuccess();
+        try {
+            expenseDto.setName(nameField.getValue());
+            expenseDto.setPrice(priceField.getValue());
+            expenseDto.setCategoryId(box.getValue().getId());
+        } catch (Exception e) {
+            showError();
+            logger.info("Edycja elementu nie powiodła się");
+            return;
         }
 
+        boolean ifUpdate = expenseClient.updateElement(id, expenseDto);
+
+        if (ifUpdate) {
+            showSuccess();
+            UI.getCurrent().navigate(ExpensesView.class);
+        } else {
+            showError();
+            UI.getCurrent().navigate(EditItemView.class);
+        }
+    }
+
+    private void fillForm(Long id) {
+
+        if (id != null) {
+            List<ExpenseDto> expenses = expenseClient.getExpense(id);
+            Category category = new Category();
+            category.setName(expenses.get(0).getType());
+
+            nameField.setValue(expenses.get(0).getName());
+            priceField.setValue(expenses.get(0).getPrice());
+        }
     }
 
     private void showSuccess() {
-        Notification notification = Notification.show("Wydatek został dodany");
+        Notification notification = Notification.show("Wydatek został zaktualizowany");
         notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    }
+
+    private void showError() {
+        Notification notification = Notification.show("Wszystkie pola muszą być wypełnione!");
+        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
     }
 }

@@ -1,6 +1,7 @@
 package com.application.budzetKlient.views.expenses;
 
 import com.application.budzetKlient.dto.AddExpenseDto;
+import com.application.budzetKlient.dto.ExpenseDto;
 import com.application.budzetKlient.model.Category;
 import com.application.budzetKlient.model.Expense;
 import com.application.budzetKlient.rest.CategoryClient;
@@ -26,10 +27,13 @@ import com.vaadin.flow.router.Route;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @PageTitle("Dodaj wydatek")
 @Route(value = "expense", layout = MainLayoutView.class)
 public class ExpenseItemView extends VerticalLayout {
+
+    Logger logger = Logger.getLogger(ExpenseItemView.class.getName());
 
     private TextField nameField = new TextField("Nazwa");
     private NumberField priceField = new NumberField("Cena");
@@ -88,21 +92,30 @@ public class ExpenseItemView extends VerticalLayout {
     private void addItem() {
         AddExpenseDto expense = new AddExpenseDto();
 
-        expense.setName(nameField.getValue());
-        expense.setPrice(priceField.getValue());
-        expense.setCategoryId(box.getValue().getId());
-
+        try {
+            expense.setName(nameField.getValue());
+            expense.setPrice(priceField.getValue());
+            expense.setCategoryId(box.getValue().getId());
+        } catch (Exception e) {
+            showError();
+            logger.info("Edycja elementu nie powiodła się");
+            return;
+        }
         boolean isAdded = expenseClient.addExpense(expense);
 
         if (isAdded) {
             UI.getCurrent().navigate(ExpensesView.class);
             showSuccess();
         }
-
     }
 
     private void showSuccess() {
         Notification notification = Notification.show("Wydatek został dodany");
         notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    }
+
+    private void showError() {
+        Notification notification = Notification.show("Wszystkie pola muszą być wypełnione!");
+        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
     }
 }

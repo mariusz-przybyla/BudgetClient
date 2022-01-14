@@ -15,12 +15,15 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
+import java.util.logging.Logger;
+
 @PageTitle("Logowanie")
 @Route(value = "login")
 @RouteAlias("")
 @CssImport("./styles/views/login/login-view.css")
 public class LoginView extends Div {
 
+    Logger logger = Logger.getLogger(LoginView.class.getName());
     private LoginForm loginForm = new LoginForm();
     private LoginClient loginClient;
 
@@ -47,9 +50,11 @@ public class LoginView extends Div {
 
         if (login) {
             UI.getCurrent().navigate(ExpensesView.class);
+            showSuccess();
         } else {
-            UI.getCurrent().getPage().reload();
             showError();
+            logger.info("Błąd logowania. Podano złe dane");
+            UI.getCurrent().getPage().reload();
         }
     }
 
@@ -71,5 +76,10 @@ public class LoginView extends Div {
     private void showError() {
         Notification notification = Notification.show("Niepoprawne dane!");
         notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+    }
+
+    private void showSuccess() {
+        Notification notification = Notification.show("Zostałeś poprawnie zalogowany");
+        notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     }
 }

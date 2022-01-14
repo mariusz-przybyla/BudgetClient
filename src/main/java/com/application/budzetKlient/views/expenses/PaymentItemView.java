@@ -1,6 +1,7 @@
 package com.application.budzetKlient.views.expenses;
 
 import com.application.budzetKlient.dto.AddExpenseDto;
+import com.application.budzetKlient.dto.ExpenseDto;
 import com.application.budzetKlient.model.Category;
 import com.application.budzetKlient.model.Expense;
 import com.application.budzetKlient.rest.CategoryClient;
@@ -15,6 +16,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -26,10 +28,13 @@ import com.vaadin.flow.router.Route;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @PageTitle("Dodaj przychód")
 @Route(value = "payment", layout = MainLayoutView.class)
 public class PaymentItemView extends VerticalLayout {
+
+    Logger logger = Logger.getLogger(PaymentItemView.class.getName());
 
     private TextField nameField = new TextField("Nazwa");
     private NumberField priceField = new NumberField("Kwota");
@@ -45,8 +50,6 @@ public class PaymentItemView extends VerticalLayout {
 
     private CategoryClient categoryClient;
     private ExpenseClient expenseClient;
-
-
 
     public PaymentItemView(CategoryClient categoryClient, ExpenseClient expenseClient, LoginClient loginClient) {
 
@@ -74,13 +77,13 @@ public class PaymentItemView extends VerticalLayout {
 
         add(formLayout);
 
+        box.setItemLabelGenerator(e -> e.getName());
+        box.setItems(categoryClient.getPaymentCategory());
+
         binder = new BeanValidationBinder<Expense>(Expense.class);
         binder.forField(nameField).asRequired().bind("name");
         binder.forField(priceField).asRequired().bind("price");
         binder.forField(box).asRequired().bind("type");
-
-        box.setItemLabelGenerator(e -> e.getName());
-        box.setItems(categoryClient.getPaymentCategory());
 
         accept.addClickListener(event -> addItem());
     }
@@ -88,9 +91,15 @@ public class PaymentItemView extends VerticalLayout {
     private void addItem() {
         AddExpenseDto expense = new AddExpenseDto();
 
-        expense.setName(nameField.getValue());
-        expense.setPrice(priceField.getValue());
-        expense.setCategoryId(box.getValue().getId());
+        try {
+            expense.setName(nameField.getValue());
+            expense.setPrice(priceField.getValue());
+            expense.setCategoryId(box.getValue().getId());
+        } catch (Exception e) {
+            showError();
+            logger.info("Dodanie elementu nie powiodło się");
+            return;
+        }
 
         boolean isAdded = expenseClient.addExpense(expense);
 
@@ -98,11 +107,15 @@ public class PaymentItemView extends VerticalLayout {
             UI.getCurrent().navigate(ExpensesView.class);
             showSuccess();
         }
-
     }
 
     private void showSuccess() {
         Notification notification = Notification.show("Wydatek został dodany");
         notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    }
+
+    private void showError() {
+        Notification notification = Notification.show("Wszystkie pola muszą być wypełnione!");
+        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +40,24 @@ public class ExpenseClient {
         }
     }
 
+    public List<ExpenseDto> getExpense(Long id) {
+
+        try {
+            ResponseEntity<ExpenseDto> responseEntity = getRestTemplate().getForEntity(
+                    "http://localhost:8080/api/expense/{id}",
+                    ExpenseDto.class,
+                    id);
+
+            ExpenseDto arrayExpenses = responseEntity.getBody();
+
+
+            return Arrays.asList(arrayExpenses);
+        } catch (Exception e) {
+            logger.info("Pobieranie wydatków nie powiodło się");
+            return null;
+        }
+    }
+
     public boolean addExpense(AddExpenseDto addExpenseDto) {
 
         ResponseEntity<ExpenseDto> responseEntity = null;
@@ -51,7 +68,7 @@ public class ExpenseClient {
                     addExpenseDto,
                     ExpenseDto.class);
         } catch (Exception e) {
-            logger.info("Dodanie wydatku nie powiodło się!");
+            logger.info("Dodanie itemu nie powiodło się!");
         }
 
         return responseEntity.getStatusCode().equals(HttpStatus.CREATED);
@@ -72,19 +89,21 @@ public class ExpenseClient {
         return true;
     }
 
-    public void updateElement(ExpenseDto expenseDto) {
-        ExpenseDto ex = new ExpenseDto();
-        ex.setName(expenseDto.getName());
-        ex.setPrice(expenseDto.getPrice());
-        ex.setType(ex.getType());
+    public boolean updateElement(Long id, AddExpenseDto expenseDto) {
+
+        Map<String, Long> params = new HashMap<>();
+        params.put("id", id);
 
         try {
             getRestTemplate().put(
                     "http://localhost:8080/api/expense/{id}",
-                    ex,
-                    ExpenseDto.class);
+                    expenseDto,
+                    id);
+            return true;
         } catch (Exception e) {
             logger.info("Edycja elementu nie powiodła się!");
+            e.getStackTrace();
+            return false;
         }
     }
 

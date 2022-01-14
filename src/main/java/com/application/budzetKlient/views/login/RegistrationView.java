@@ -33,16 +33,13 @@ public class RegistrationView extends VerticalLayout {
 
     RegistrationClient registrationClient;
 
-//    private UserDetailsService service;
     private BeanValidationBinder<UserDetails> binder;
 
     private boolean enablePasswordValidation;
 
     public RegistrationView(RegistrationClient registrationClient) {
-//    public RegistrationView(RegistrationClient registrationClient) {
 
         this.registrationClient = registrationClient;
-//        this.service = service;
 
         H2 title = new H2("Rejestracja");
 
@@ -139,7 +136,6 @@ public class RegistrationView extends VerticalLayout {
         if (pass1 != null && pass1.equals(pass2)) {
             return ValidationResult.ok();
         }
-
         return ValidationResult.error("Hasła nie są równe!");
     }
 }
